@@ -23,3 +23,4 @@ rootProject.name = "Desafio"
 include(":app")
 include(":core:designsystem")
 include(":core:navigation")
+include(":feature:home")
