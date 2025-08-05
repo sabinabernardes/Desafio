@@ -46,9 +46,8 @@ fun UserCard(
                     painter = avatar,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(Dimens.spacing40 + Dimens.spacing12) // 52.dp = 40 + 12
+                        .size(Dimens.spacing52)
                         .clip(CircleShape)
-                        .background(ColorPrimaryDark)
                 )
                 if (isLoading) {
                     androidx.compose.material3.CircularProgressIndicator(
@@ -70,7 +69,7 @@ fun UserCard(
                 )
                 Text(
                     text = name,
-                    style = Typography.bodyMedium
+                    style = Typography.bodySmall
                 )
             }
         }
