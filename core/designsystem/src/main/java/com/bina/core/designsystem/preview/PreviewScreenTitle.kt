@@ -1,4 +1,4 @@
-package com.bina.core.designsystem
+package com.bina.core.designsystem.preview
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

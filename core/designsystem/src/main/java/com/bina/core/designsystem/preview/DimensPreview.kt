@@ -1,4 +1,4 @@
-package com.bina.core.designsystem
+package com.bina.core.designsystem.preview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
