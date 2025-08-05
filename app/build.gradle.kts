@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -56,4 +57,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("${rootProject.projectDir}/detekt.yml")
+    source = files("src/main/java", "src/test/java")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        txt.required.set(false)
+        sarif.required.set(false)
+    }
 }

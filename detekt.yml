@@ -1,0 +1,41 @@
+build:
+  maxIssues: 0
+  weights:
+    complexity: 2
+    LongParameterList: 1
+    style: 1
+    comments: 1
+
+processors:
+  active: true
+  exclude:
+    - 'FunctionCountProcessor'
+    - 'PropertyCountProcessor'
+    - 'ClassCountProcessor'
+    - 'PackageCountProcessor'
+
+console-reports:
+  active: true
+  exclude: []
+
+output-reports:
+  active: true
+  exclude: []
+
+style:
+  MagicNumber:
+    active: false
+  WildcardImport:
+    active: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][A-Za-z0-9]*'
+    ignoreAnnotated:
+      - Composable
+
