@@ -1,4 +1,4 @@
-package com.bina.core.designsystem.componentes
+package com.bina.core.designsystem.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bina.core.designsystem.Typography.Typography
 import com.bina.core.designsystem.colors.ColorPrimary
@@ -50,7 +52,7 @@ fun UserCard(
                         .clip(CircleShape)
                 )
                 if (isLoading) {
-                    androidx.compose.material3.CircularProgressIndicator(
+                    CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.Center)
                             .size(Dimens.spacing24),
@@ -80,7 +82,7 @@ fun UserCard(
 @Preview(showBackground = true)
 fun UserCardPreview() {
     UserCard(
-        avatar = androidx.compose.ui.res.painterResource(id = com.bina.core.designsystem.R.drawable.ic_avatar_test),
+        avatar = painterResource(id = com.bina.core.designsystem.R.drawable.ic_avatar_test),
         username = "johndoe",
         name = "John Doe",
         isLoading = true
