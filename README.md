@@ -165,7 +165,8 @@ Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
 
 | Nº  | Branch | Descrição rápida |
 |----:|--------|------------------|
-| 001 | `core/001-designsystem-foundation` | **core/designsystem** – cores, tipografia, espaçamentos, `Theme.kt`, previews. |
+| 001 | `core/001-designsystem-foundation` | **core/designsystem** – modulo. |
+| 001 | `core/001-designsystem-foundation_pt2` | **core/designsystem** – cores, tipografia, espaçamentos, `Theme.kt`, previews. |
 | 002 | `core/002-designsystem-components` | Botões, textos, cards, estados de loading/erro, docs KDoc + stories no Playground. |
 | 003 | `core/003-common` | **core/common** – Result, AppError, DispatchersProvider + testes unitários. |
 | 004 | `core/004-network` | **core/network** – Retrofit, OkHttp, interceptors, MockWebServer configuração base. |
