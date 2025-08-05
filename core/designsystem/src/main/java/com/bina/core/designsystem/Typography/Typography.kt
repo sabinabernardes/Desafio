@@ -19,18 +19,14 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontSize = 16.sp,
         color = Color.White
-    )
-)
-
-object TypographyExtras {
-    val labelUsername = TextStyle(
+    ),
+    bodyMedium = TextStyle(
         fontSize = 16.sp,
         color = Color.White,
-        fontWeight = FontWeight.Medium,
-    )
-
-    val labelDetail = TextStyle(
+        fontWeight = FontWeight.Medium
+    ),
+    bodySmall = TextStyle(
         fontSize = 14.sp,
-        color = ColorDetail,
+        color = ColorDetail
     )
-}
+)
