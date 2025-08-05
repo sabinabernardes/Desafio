@@ -165,10 +165,11 @@ Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
 
 | Nº  | Branch | Descrição rápida |
 |----:|--------|------------------|
-| 010 | `core/010-common` | **core/common** – Result, AppError, DispatchersProvider + testes. |
-| 011 | `core/011-network` | **core/network** – Retrofit, OkHttp, interceptors, MockWebServer. |
-| 012 | `core/012-database` | **core/database** – Room, entities, migrations, DAO tests. |
-| 013 | `core/013-designsystem` | **core/designsystem** – tema, componentes, previews. |
+| 001 | `core/001-designsystem-foundation` | **core/designsystem** – cores, tipografia, espaçamentos, `Theme.kt`, previews. |
+| 002 | `core/002-designsystem-components` | Botões, textos, cards, estados de loading/erro, docs KDoc + stories no Playground. |
+| 003 | `core/003-common` | **core/common** – Result, AppError, DispatchersProvider + testes unitários. |
+| 004 | `core/004-network` | **core/network** – Retrofit, OkHttp, interceptors, MockWebServer configuração base. |
+| 005 | `core/005-database` | **core/database** – Room, entidades, DAO + in-memory tests. |
 
 ---
 
