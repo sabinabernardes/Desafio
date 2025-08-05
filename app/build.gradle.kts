@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -23,7 +25,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -57,3 +59,44 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("${rootProject.projectDir}/detekt.yml")
+    source = files("src/main/java", "src/test/java")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        txt.required.set(false)
+        sarif.required.set(false)
+    }
+}
+
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn("testDebugUnitTest")
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+        val fileFilter = listOf(
+            // Exclui arquivos gerados e de teste
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+        val debugTree = fileTree(
+            "${buildDir}/intermediates/javac/debug/classes"
+        ) { exclude(fileFilter) }
+        val mainSrc = "src/main/java"
+        classDirectories.setFrom(debugTree)
+        sourceDirectories.setFrom(files(mainSrc))
+        executionData.setFrom(fileTree(buildDir) {
+            include(
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+            )
+        })
+    }
