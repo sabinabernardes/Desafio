@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.bina.desingsystem"
+    namespace = "com.bina.designsystem"
     compileSdk = 36
 
     defaultConfig {

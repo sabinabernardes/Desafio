@@ -1,4 +1,4 @@
-package com.bina.desingsystem
+package com.bina.designsystem
 
 import org.junit.Test
 
