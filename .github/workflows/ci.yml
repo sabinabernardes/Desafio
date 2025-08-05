@@ -18,3 +18,10 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
       - name: Build
         run: ./gradlew detekt ktlintFormat assembleDebug
+      - name: Run Unit Tests and Coverage
+        run: ./gradlew testDebugUnitTest jacocoTestReport
+      - name: Upload Jacoco Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: app/build/reports/jacoco/jacocoTestReport/html

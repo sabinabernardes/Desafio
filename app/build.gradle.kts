@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -71,3 +71,32 @@ detekt {
         sarif.required.set(false)
     }
 }
+
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn("testDebugUnitTest")
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+        val fileFilter = listOf(
+            // Exclui arquivos gerados e de teste
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+        val debugTree = fileTree(
+            "${buildDir}/intermediates/javac/debug/classes"
+        ) { exclude(fileFilter) }
+        val mainSrc = "src/main/java"
+        classDirectories.setFrom(debugTree)
+        sourceDirectories.setFrom(files(mainSrc))
+        executionData.setFrom(fileTree(buildDir) {
+            include(
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+            )
+        })
+    }
