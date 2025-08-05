@@ -90,7 +90,6 @@ flowchart LR
 ```
 app/                          # Chamada do di+ navegação
 core/designsystem/            # Tema, cores, componentes, espaçamentos
-core/playground               # Teste dos componentes do DS
 core/navigation               # Composition root + navegação
 core/network/                 # Retrofit/OkHttp + interceptors
 core/common/                  # Result, Error, DispatchersProvider
@@ -168,22 +167,23 @@ Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
 | 001 | `core/001-designsystem-foundation` | **core/designsystem** – modulo. |
 | 001 | `core/001-designsystem-foundation_pt2` | **core/designsystem** – cores, tipografia, espaçamentos, `Theme.kt`, previews. |
 | 002 | `core/002-designsystem-components` | Botões, textos, cards, estados de loading/erro, docs KDoc + stories no Playground. |
-| 003 | `core/003-common` | **core/common** – Result, AppError, DispatchersProvider + testes unitários. |
-| 004 | `core/004-network` | **core/network** – Retrofit, OkHttp, interceptors, MockWebServer configuração base. |
-| 005 | `core/005-database` | **core/database** – Room, entidades, DAO + in-memory tests. |
+| 003 | `core/003-navigation` | **core/navigation** – Prepara para a navegação do app |
 
 ---
 
-## ✨ Features
+## ✨ Feature: Home
 
 | Nº  | Branch | Descrição rápida |
 |----:|--------|------------------|
-| 014 | `feature/014-home-data` | Data layer da Home (DTO, mapper, Repository, Paging). |
-| 015 | `feature/015-home-ui` | UI Home em Compose + ViewModel + testes de VM. |
-| 017 | `feature/017-offline-cache` | Política Room-first + refresh paralelo, banner “offline”. |
-| 018 | `feature/018-error-handling` | Mapeio erros → UI, retry com backoff, SnackBar/toasts. |
-| 019 | `feature/019-ui-tests` | Compose UI tests: loading, empty, error, success + ações. |
-| 020 | `feature/020-perf-accessibility` | Passo final de performance (recomposição) e A11y. |
+| 001 | `feature/001-model-dto-mapper` | Criação dos modelos de domínio, DTOs da API e mapeadores entre eles. |
+| 002 | `feature/002-repository-impl` | Implementação do repositório com Retrofit + Room no próprio módulo. |
+| 003 | `feature/003-room-cache` | Entidades Room, DAO e política de cache local-first integrada ao repo. |
+| 004 | `feature/004-usecase` | Camada opcional de UseCase isolando regras de negócio da UI. |
+| 005 | `feature/005-home-viewmodel` | ViewModel e contratos de UI (State + Event), gerenciamento com StateFlow. |
+| 006 | `feature/006-home-screen` | Tela principal em Compose, integração com ViewModel e preview. |
+| 007 | `feature/007-error-handling` | Mapeamento de erros para estado de tela, mensagens amigáveis, retry. |
+| 008 | `feature/008-ui-tests` | Testes instrumentados e de UI Compose cobrindo cenários principais. |
+| 009 | `feature/009-performance-a11y` | Ajustes finais de recomposição, semantics, acessibilidade e lazy loading. |
 
 ---
 
