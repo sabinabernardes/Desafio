@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Desafio"
 include(":app")
+include(":core:designsystem")
