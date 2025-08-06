@@ -3,6 +3,7 @@ package com.bina.home.data.mapper
 import com.bina.home.data.database.UserEntity
 import com.bina.home.data.model.User
 import com.bina.home.domain.model.UserDomain
+import java.util.UUID
 
 fun User.toDomain(): UserDomain {
     return UserDomain(
@@ -33,7 +34,7 @@ fun UserEntity.toDomain(): UserDomain {
 
 fun User.toEntity(): UserEntity {
     return UserEntity(
-        id = this.id ?: "",
+        id = this.id.ifBlank { UUID.randomUUID().toString() },
         name = this.name,
         username = this.username,
         img = this.img

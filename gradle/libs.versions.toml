@@ -28,9 +28,6 @@ navigationComposeJvmstubs = "2.9.3"
 navigationComposeAndroid = "2.9.3"
 roomCommonJvm = "2.7.2"
 roomRuntimeAndroid = "2.7.2"
-androidxRoomRuntime = "androidx.room:room-runtime:2.6.1"
-androidxRoomCompiler = "androidx.room:room-compiler:2.6.1"
-androidxRoomKtx = "androidx.room:room-ktx:2.6.1"
 roomVersion = "2.7.2"
 
 [libraries]

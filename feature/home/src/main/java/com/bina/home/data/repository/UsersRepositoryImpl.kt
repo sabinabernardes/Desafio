@@ -16,14 +16,18 @@ class UsersRepositoryImpl(
 
     override suspend fun getUsers(): Flow<List<UserDomain>> = flow {
         val cached = userDao.getAllUsers()
-        if (cached.isNotEmpty()) emit(cached.map { it.toDomain() })
+        val cachedDomain = cached.map { it.toDomain() }
+        if (cachedDomain.isNotEmpty()) emit(cachedDomain)
 
         try {
             val api = picPayService.getUsers()
+            val apiDomain = api.map { it.toDomain() }
             userDao.insertUsers(api.map { it.toEntity() })
-            emit(api.map { it.toDomain() })
+            if (apiDomain != cachedDomain) {
+                emit(apiDomain)
+            }
         } catch (e: Exception) {
-            if (cached.isEmpty()) emit(emptyList())
+            if (cachedDomain.isEmpty()) emit(emptyList())
         }
     }
 }
