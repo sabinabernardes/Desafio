@@ -66,9 +66,9 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 ndroidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
-androidx-room-runtime = { module = "androidx.room:room-runtime", version = "2.6.1" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version = "2.6.1" }
-androidx-room-ktx = { module = "androidx.room:room-ktx", version = "2.6.1" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version = "2.7.2" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version = "2.7.2" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version = "2.7.2" }
 
 
 [plugins]
