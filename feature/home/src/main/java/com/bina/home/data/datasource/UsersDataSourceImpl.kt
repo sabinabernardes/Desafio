@@ -9,9 +9,11 @@ import kotlinx.coroutines.flow.flow
 class UsersDataSourceImpl(private val service: PicPayService) : UsersDataSource {
     override suspend fun getUsers(): Flow<List<User>> {
         return flow {
-            emit(service.getUsers())
-        }.catch {
-            emit(emptyList())
+            try {
+                emit(service.getUsers())
+            } catch (e: Exception) {
+                emit(emptyList())
+            }
         }
     }
 }
