@@ -1,6 +1,6 @@
 # Desafio Android — Solução (Jetpack Compose)
 
-> **Resumo :** Arquitetura modular, UDF com ViewModel + StateFlow, offline-first (Room + OkHttp cache), testes (unit + instrumentado + UI Compose) e resiliência a rotação, process-death e rede ruim.
+> **Resumo :** Arquitetura modular, UDF com ViewModel + StateFlow, offline-first (Room), testes (unit + instrumentado + UI Compose) e resiliência a rotação, process-death e rede ruim.
 
 ![badge-android](https://img.shields.io/badge/Android-Compose-3DDC84)
 ![badge-kotlin](https://img.shields.io/badge/Kotlin-2.x-blue)
@@ -15,11 +15,9 @@
 4. [Módulos](#módulos)
 5. [Fluxo de Dados](#fluxo-de-dados)
 6. [Política de Cache](#política-de-cache)
-7. [Tratamento de Erros](#tratamento-de-erros)
-8. [Glosário de Branchs](#glossário-de-branches)
-9. [Como Rodar](#como-rodar)
-10. [Testes](#testes)
-11. [Próximos Passos](#próximos-passos)
+7. [Glosário de Branchs](#glossário-de-branches)
+8. [Testes](#testes)
+9. [Próximos Passos](#próximos-passos)
 
 ---
 
@@ -29,9 +27,8 @@
 | UI | **Jetpack Compose**, Navigation Compose, Coil |
 | DI | Koin |
 | Assíncrono | Coroutines + Flow |
-| Network | Retrofit + OkHttp (logging só em *debug*) |
-| Cache | Room + OkHttp cache (ETag/Last-Modified) |
-| Paginação | Paging 3 |
+| Network | Retrofit  |
+| Cache | Room |
 | Qualidade | Detekt, Ktlint |
 | Testes | JUnit5, MockK, Turbine, MockWebServer, Compose UI Testing |
 
@@ -132,19 +129,6 @@ fun Screen(state: UiState, onRetry: () -> Unit) {
 3. Offline? Mostra o que tem no DB e sinaliza modo offline.
 
 ---
-
-## Tratamento de Erros
-
-| Throwable -> AppError | Como a UI reage |
-| --------------------- | --------------- |
-| `UnknownHostException` | Sem conexão |
-| `SocketTimeoutException` | Timeout |
-| `HttpException` 4xx/5xx | `Server(code)` |
-| Outro | `Unknown` |
-
-Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
-
----
 ## Glossário de Branches
 
 > **Por quê?**  
@@ -176,30 +160,8 @@ Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
 | Nº  | Branch | Descrição rápida |
 |----:|--------|------------------|
 | 001 | `feature/001-model-dto-mapper` | Criação dos modelos de domínio, DTOs da API e mapeadores entre eles. |
-| 002 | `feature/002-repository-impl` | Implementação do repositório com Retrofit + Room no próprio módulo. |
-| 003 | `feature/003-room-cache` | Entidades Room, DAO e política de cache local-first integrada ao repo. |
 | 004 | `feature/004-usecase` | Camada opcional de UseCase isolando regras de negócio da UI. |
 | 005 | `feature/005-home-viewmodel` | ViewModel e contratos de UI (State + Event), gerenciamento com StateFlow. |
-| 006 | `feature/006-home-screen` | Tela principal em Compose, integração com ViewModel e preview. |
-| 007 | `feature/007-error-handling` | Mapeamento de erros para estado de tela, mensagens amigáveis, retry. |
-| 008 | `feature/008-ui-tests` | Testes instrumentados e de UI Compose cobrindo cenários principais. |
-| 009 | `feature/009-performance-a11y` | Ajustes finais de recomposição, semantics, acessibilidade e lazy loading. |
-
----
-
-## 📱 App
-
-| Nº  | Branch | Descrição rápida |
-|----:|--------|------------------|
-| 016 | `app/016-navigation-root` | Navigation Compose, injeta VM Home, restaura estado em rotação. |
-
----
-
-## 📝 Docs
-
-| Nº  | Branch | Descrição rápida |
-|----:|--------|------------------|
-| 021 | `docs/021-readme-gifs` | GIFs, badges finais, cobertura, LICENSE, contatos no README. |
 
 ---
 
@@ -213,26 +175,6 @@ Retry com backoff nos casos que vale a pena e mensagens “Tentar novamente”.
 Esse esquema garante histórico linear, PRs focados e fácil rastreabilidade de discussões.
 
 ---
-## Como Rodar
-
-> Depende de **JDK 17** e Android Studio **Koala** ou superior.
-
-```bash
-git clone https://github.com/SEU-USUARIO/SEU-REPO.git
-cd SEU-REPO
-
-./gradlew clean assembleDebug detekt ktlintCheck   # build + análise
-./gradlew test                                     # unit tests
-./gradlew connectedAndroidTest                     # instrumentados
-```
-
-Secrets/API → `local.properties` (fica fora do Git):
-
-```
-API_BASE_URL=https://api.exemplo.com/
-```
-
----
 
 ## Testes
 
@@ -242,7 +184,6 @@ API_BASE_URL=https://api.exemplo.com/
 | Instrumentado | Room (in-memory), MockWebServer | DAO, rede 200/304/404/500 |
 | UI Compose | Compose Test | loading/empty/error/success + ações |
 
-Meta de ≥ 70 % em domain/data.
 
 ---
 
@@ -251,5 +192,4 @@ Meta de ≥ 70 % em domain/data.
 - Snapshot tests (Papparazzi)   
 - Feature flags simples  
 - E2E tests
-
 ---
