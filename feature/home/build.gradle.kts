@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core:designsystem"))
 
     implementation(libs.androidx.core.ktx)
@@ -56,10 +55,10 @@ dependencies {
     implementation(libs.insert.koin.koin.android)
     implementation(libs.io.insert.koin.koin.androidx.compose)
     implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+    testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation(libs.junit)
