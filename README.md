@@ -36,7 +36,14 @@
 
 ## Screenshots / GIFs
 
-> **TODO:** inserir 2–3 GIFs curtos (loading → sucesso; erro → retry; offline).
+<img width="406" height="862" alt="Captura de Tela 2025-08-07 às 16 26 31" src="https://github.com/user-attachments/assets/0c509c16-9145-4479-802d-c798bfb56df4" />
+
+<img width="969" height="885" alt="Captura de Tela 2025-08-07 às 16 26 39" src="https://github.com/user-attachments/assets/913bc125-8c59-42ed-86de-98b5fdaf8fd4" />
+
+<img width="270" height="260" alt="Captura de Tela 2025-08-07 às 16 27 46" src="https://github.com/user-attachments/assets/2416777f-69cb-4280-8d6d-3ac22ca984a1" />
+
+<img width="336" height="314" alt="Captura de Tela 2025-08-07 às 16 28 08" src="https://github.com/user-attachments/assets/96b401c4-51ef-4aa3-8ff5-2500b7d0905a" />
+
 
 ---
 
@@ -100,23 +107,10 @@ feature/home/                 # Tela principal (UI + VM + DI)
 Estado imutável (`StateFlow<UiState>`) na ViewModel; eventos one-shot em `SharedFlow`.
 
 ```kotlin
-data class UiState(
-    val isLoading: Boolean = false,
-    val items: List<UiItem> = emptyList(),
-    val error: UiError? = null,
-    val isEmpty: Boolean = false
-)
-```
-
-```kotlin
-@Composable
-fun Screen(state: UiState, onRetry: () -> Unit) {
-    when {
-        state.isLoading -> Loading()
-        state.error != null -> Error(onRetry)
-        state.isEmpty -> Empty(onRetry)
-        else -> Content(state.items)
-    }
+sealed class HomeUiState {
+    object Loading : HomeUiState()
+    data class Success(val users: List<UserDomain>) : HomeUiState()
+    data class Error(val message: String) : HomeUiState()
 }
 ```
 
