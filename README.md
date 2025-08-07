@@ -95,8 +95,6 @@ flowchart LR
 app/                          # Chamada do di+ navegação
 core/designsystem/            # Tema, cores, componentes, espaçamentos
 core/navigation               # Composition root + navegação
-core/network/                 # Retrofit/OkHttp + interceptors
-core/common/                  # Result, Error, DispatchersProvider
 feature/home/                 # Tela principal (UI + VM + DI)
 ```
 
