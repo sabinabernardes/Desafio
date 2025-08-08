@@ -50,42 +50,40 @@
 ## Arquitetura
 
 ```mermaid
-flowchart LR
-  
-  subgraph Presentation["Presentation"]
-  subgraph UI_Layer["UI"]
-    UI[Compose]
-  end
-    VM[ViewModel]
+flowchart TD
+
+  %% Apresentação
+  subgraph P["Presentation"]
+    UI[Compose] -->|Intents| VM[ViewModel]
+    VM -->|StateFlow<UiState>| UI
   end
 
-  subgraph Domain["Domain"]
-    UC["UseCase<br/>"]
+  %% Domínio
+  subgraph D["Domain"]
+    UC[UseCase]
+    IRepo["Repository (interface)<br/><code>interface UserRepository</code>"]
+    UC --> IRepo
   end
 
-  subgraph Data["Data"]
-    REPO[Repository<br/>]
+  %% Dados (embaixo do Domain)
+  subgraph DA["Data"]
+    RepoImpl["RepositoryImpl<br/><code>class UserRepositoryImpl</code>"]
     ROOM[(Room<br/>Local Cache)]
     RETRO[Retrofit/OkHttp<br/>Remote]
+    RepoImpl --> ROOM
+    RepoImpl --> RETRO
   end
 
-  %% Fluxo principal
-  UI -->|Intents| VM
+  %% Ligações entre camadas
   VM --> UC
-  UC --> REPO
-
-  %% Fontes de dados
-  REPO --> ROOM
-  REPO --> RETRO
-
-  %% Estado de volta pra UI
-  VM -->|StateFlow&lt;UiState&gt;| UI
+  RepoImpl -.->|implements| IRepo
 
 ```
-> **Por quê assim ?**  
-> Resiliência: ViewModel + SavedStateHandle seguram estado em rotação/process-death.
-> Evolução: Domain separado garante mudanças de regra sem mexer UI/Data.
-> Offline-first: Repo decide cache versus remoto, mantendo UX consistente.
+> **Por que assim?**  
+> 
+> - **Resiliência** → ViewModel + `SavedStateHandle` mantêm o estado mesmo em rotação de tela ou process-death, evitando recarregar tudo e perder progresso do usuário.  
+> - **Evolução** → Separar o Domain garante que mudanças de regra de negócio não quebrem UI ou Data, facilitando testes e refatorações sem efeito dominó.  
+> - **Offline-first** → O Repository decide entre cache local (Room) e remoto (API), mantendo UX consistente e dados disponíveis mesmo sem internet.
 
 ---
 
@@ -156,6 +154,8 @@ sealed class HomeUiState {
 | 004 | `feature/004-usecase` | Camada opcional de UseCase isolando regras de negócio da UI. |
 | 005 | `feature/005-home-viewmodel` | ViewModel e contratos de UI (State + Event), gerenciamento com StateFlow. |
 | 006 | `feature/006-adjusting-internal` | Ajusta as classes internal do modulo home pra nao dar acesso a outros modulos . |
+| 007 | `feature/006-adjusting-local-data-source` | Ajusta o controle do local data source no projeto  . |
+| 008 | `feature/006-adjusting-xp-screen` | Ajusta o a experiência da home . |
 
 
 ---
