@@ -1,13 +1,11 @@
 package com.bina.home.presentation.viewmodel
 
 import com.bina.home.domain.usecase.GetUsersUseCase
-import com.bina.home.domain.model.UserDomain
+import com.bina.home.domain.model.User
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -39,7 +37,7 @@ class HomeViewModelTest {
     @Test
     fun `given use case returns users when fetchUsers called then uiState is Success`() = runTest {
         // given
-        val expectedUsers = listOf(UserDomain("img", "name", "id", "username"))
+        val expectedUsers = listOf(User("img", "name", "id", "username"))
         coEvery { getUsersUseCase() } returns flowOf(expectedUsers)
         // when
         viewModel.fetchUsers()

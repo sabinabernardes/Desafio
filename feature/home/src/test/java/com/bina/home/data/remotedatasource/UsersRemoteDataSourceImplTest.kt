@@ -1,4 +1,4 @@
-package com.bina.home.datasource
+package com.bina.home.data.remotedatasource
 
 import com.bina.home.data.remotedatasource.UsersRemoteDataSourceImpl
 import com.bina.home.data.model.UserDto

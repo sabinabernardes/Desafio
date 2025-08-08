@@ -1,6 +1,6 @@
 package com.bina.home.domain.usecase
 
-import com.bina.home.domain.model.UserDomain
+import com.bina.home.domain.model.User
 import com.bina.home.domain.repository.UsersRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -26,7 +26,7 @@ class GetUsersUseCaseTest {
     @Test
     fun `given repository returns users when use case called then emit users`() = runTest {
         // given
-        val expectedUsers = listOf(UserDomain("img", "name", "id", "username"))
+        val expectedUsers = listOf(User("img", "name", "id", "username"))
         coEvery { repository.getUsers() } returns flowOf(expectedUsers)
         // when
         val result = useCase().first()
@@ -41,7 +41,7 @@ class GetUsersUseCaseTest {
         // when
         val result = useCase().first()
         // then
-        assertEquals(emptyList<UserDomain>(), result)
+        assertEquals(emptyList<User>(), result)
     }
 }
 

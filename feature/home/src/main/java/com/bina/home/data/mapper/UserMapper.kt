@@ -2,11 +2,11 @@ package com.bina.home.data.mapper
 
 import com.bina.home.data.database.UserEntity
 import com.bina.home.data.model.UserDto
-import com.bina.home.domain.model.UserDomain
+import com.bina.home.domain.model.User
 import java.util.UUID
 
-internal fun UserDto.toDomain(): UserDomain {
-    return UserDomain(
+internal fun UserDto.toDomain(): User {
+    return User(
         img = this.img,
         name = this.name,
         id = this.id,
@@ -14,7 +14,7 @@ internal fun UserDto.toDomain(): UserDomain {
     )
 }
 
-internal fun UserDomain.toData(): UserDto {
+internal fun User.toData(): UserDto {
     return UserDto(
         img = this.img,
         name = this.name,
@@ -23,8 +23,8 @@ internal fun UserDomain.toData(): UserDto {
     )
 }
 
-internal fun UserEntity.toDomain(): UserDomain {
-    return UserDomain(
+internal fun UserEntity.toDomain(): User {
+    return User(
         img = this.img,
         name = this.name,
         id = this.id,
