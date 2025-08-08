@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface UserDao {
+internal interface UserDao {
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<UserEntity>
 

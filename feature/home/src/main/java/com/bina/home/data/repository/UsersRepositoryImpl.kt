@@ -9,7 +9,7 @@ import com.bina.home.domain.repository.UsersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class UsersRepositoryImpl(
+internal class UsersRepositoryImpl(
     private val userDao: UserDao,
     private val picPayService: PicPayService
 ) : UsersRepository {

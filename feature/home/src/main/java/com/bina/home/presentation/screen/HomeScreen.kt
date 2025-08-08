@@ -38,7 +38,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeScreenContent(uiState: HomeUiState) {
+private fun HomeScreenContent(uiState: HomeUiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
