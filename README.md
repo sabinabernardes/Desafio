@@ -35,14 +35,11 @@
 ---
 
 ## Screenshots / GIFs
+<img width="334" height="734" alt="Captura de Tela 2025-08-08 às 20 27 40" src="https://github.com/user-attachments/assets/ef28131a-6cfb-45c0-9988-5c6a0bbcb5a2" />
 
-<img width="406" height="862" alt="Captura de Tela 2025-08-07 às 16 26 31" src="https://github.com/user-attachments/assets/0c509c16-9145-4479-802d-c798bfb56df4" />
+<img width="308" height="650" alt="Captura de Tela 2025-08-08 às 20 27 48" src="https://github.com/user-attachments/assets/d80a3253-26b1-4d02-94ce-6cb346023271" />
 
-<img width="969" height="885" alt="Captura de Tela 2025-08-07 às 16 26 39" src="https://github.com/user-attachments/assets/913bc125-8c59-42ed-86de-98b5fdaf8fd4" />
-
-<img width="270" height="260" alt="Captura de Tela 2025-08-07 às 16 27 46" src="https://github.com/user-attachments/assets/2416777f-69cb-4280-8d6d-3ac22ca984a1" />
-
-<img width="336" height="314" alt="Captura de Tela 2025-08-07 às 16 28 08" src="https://github.com/user-attachments/assets/96b401c4-51ef-4aa3-8ff5-2500b7d0905a" />
+<img width="310" height="710" alt="Captura de Tela 2025-08-08 às 20 27 57" src="https://github.com/user-attachments/assets/790c3f22-14b0-4e45-8972-157f2cb58c68" />
 
 
 ---
@@ -65,7 +62,7 @@ flowchart TD
     UC --> IRepo
   end
 
-  %% Dados (embaixo do Domain)
+  %% Dados 
   subgraph DA["Data"]
     RepoImpl["RepositoryImpl<br/><code>class UserRepositoryImpl</code>"]
     ROOM[(Room<br/>Local Cache)]
@@ -154,9 +151,8 @@ sealed class HomeUiState {
 | 004 | `feature/004-usecase` | Camada opcional de UseCase isolando regras de negócio da UI. |
 | 005 | `feature/005-home-viewmodel` | ViewModel e contratos de UI (State + Event), gerenciamento com StateFlow. |
 | 006 | `feature/006-adjusting-internal` | Ajusta as classes internal do modulo home pra nao dar acesso a outros modulos . |
-| 007 | `feature/006-adjusting-local-data-source` | Ajusta o controle do local data source no projeto  . |
-| 008 | `feature/006-adjusting-xp-screen` | Ajusta o a experiência da home . |
-
+| 007 | `feature/007-adjusting-local-data-source` | Ajusta o controle do local data source no projeto  . |
+| 008 | `feature/008-adjusting-xp-screen` | Ajusta o a experiência da home . |
 
 ---
 
