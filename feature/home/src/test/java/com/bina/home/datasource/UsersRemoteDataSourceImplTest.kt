@@ -1,6 +1,6 @@
 package com.bina.home.datasource
 
-import com.bina.home.data.datasource.UsersDataSourceImpl
+import com.bina.home.data.remotedatasource.UsersRemoteDataSourceImpl
 import com.bina.home.data.model.UserDto
 import com.bina.home.data.service.PicPayService
 import io.mockk.coEvery
@@ -18,9 +18,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class UsersDataSourceImplTest {
+class UsersRemoteDataSourceImplTest {
     private val service: PicPayService = mockk()
-    private val dataSource = UsersDataSourceImpl(service)
+    private val dataSource = UsersRemoteDataSourceImpl(service)
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = TestScope(testDispatcher)
 

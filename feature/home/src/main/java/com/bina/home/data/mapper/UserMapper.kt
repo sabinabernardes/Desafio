@@ -40,3 +40,12 @@ internal fun UserDto.toEntity(): UserEntity {
         img = this.img
     )
 }
+
+internal fun UserEntity.toDto(): UserDto {
+    return UserDto(
+        img = this.img,
+        name = this.name,
+        id = this.id,
+        username = this.username
+    )
+}
