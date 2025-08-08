@@ -19,7 +19,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlinx.coroutines.Dispatchers
 
-class FakeUsersRepository(private val users: List<UserDomain>) : UsersRepository {
+internal class FakeUsersRepository(private val users: List<UserDomain>) : UsersRepository {
     override suspend fun getUsers(): Flow<List<UserDomain>> = flowOf(users)
 }
 

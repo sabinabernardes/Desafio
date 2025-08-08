@@ -1,7 +1,7 @@
 package com.bina.home.datasource
 
 import com.bina.home.data.datasource.UsersDataSourceImpl
-import com.bina.home.data.model.User
+import com.bina.home.data.model.UserDto
 import com.bina.home.data.service.PicPayService
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,7 +37,7 @@ class UsersDataSourceImplTest {
     @Test
     fun `given service returns users when getUsers called then emit users`(): Unit = testScope.runTest {
         // given
-        val expectedUsers = listOf(User("img", "name", "id", "username"))
+        val expectedUsers = listOf(UserDto("img", "name", "id", "username"))
         coEvery { service.getUsers() } returns expectedUsers
 
         // when
@@ -56,6 +56,6 @@ class UsersDataSourceImplTest {
         val result = dataSource.getUsers().first()
 
         // then
-        assertEquals(emptyList<User>(), result)
+        assertEquals(emptyList<UserDto>(), result)
     }
 }

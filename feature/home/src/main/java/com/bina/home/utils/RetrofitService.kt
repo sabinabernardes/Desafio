@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://609a908e0f5a13001721b74e.mockapi.io/picpay/api/"
 
-class RetrofitService {
+internal class RetrofitService {
     companion object {
         val service: PicPayService
 

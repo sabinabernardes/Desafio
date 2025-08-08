@@ -1,6 +1,6 @@
 package com.bina.home.utils
 
-sealed class UserError {
+internal sealed class UserError {
     object Network : UserError()
     object NotFound : UserError()
     object Unauthorized : UserError()

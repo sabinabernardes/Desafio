@@ -4,7 +4,7 @@ import com.bina.home.domain.model.UserDomain
 import com.bina.home.domain.repository.UsersRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetUsersUseCase(private val repository: UsersRepository) {
+internal class GetUsersUseCase(private val repository: UsersRepository) {
     suspend operator fun invoke(): Flow<List<UserDomain>> =
         repository.getUsers()
 }
