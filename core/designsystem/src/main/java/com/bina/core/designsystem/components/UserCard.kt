@@ -20,9 +20,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.bina.core.designsystem.Typography.Typography
+import com.bina.core.designsystem.colors.ColorBackground
+import com.bina.core.designsystem.typography.Typography
 import com.bina.core.designsystem.colors.ColorPrimary
-import com.bina.core.designsystem.colors.ColorPrimaryDark
 import com.bina.core.designsystem.dimens.Dimens
 
 @Composable
@@ -36,7 +36,7 @@ fun UserCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(ColorPrimaryDark)
+            .background(ColorBackground)
             .padding(vertical = Dimens.spacing12)
     ) {
         Row(

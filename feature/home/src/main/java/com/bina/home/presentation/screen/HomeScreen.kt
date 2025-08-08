@@ -18,17 +18,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import coil.compose.rememberAsyncImagePainter
 import androidx.compose.ui.tooling.preview.Preview
-import com.bina.core.designsystem.Typography.Typography
+import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.bina.core.designsystem.colors.ColorBackground
 import com.bina.core.designsystem.colors.ColorPrimary
-import com.bina.core.designsystem.colors.Theme
 import com.bina.core.designsystem.components.UserCard
 import com.bina.core.designsystem.dimens.Dimens
+import com.bina.core.designsystem.picpaytheme.PicPayTheme
+import com.bina.core.designsystem.typography.Typography
 import com.bina.home.domain.model.User
 import com.bina.home.presentation.viewmodel.HomeUiState
 import com.bina.home.presentation.viewmodel.HomeViewModel
-import androidx.navigation.NavHostController
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -36,7 +37,9 @@ fun HomeRoute(
     navController: NavHostController,
 ) {
     HomeScreen(
-        onRetry = { /* opcional: mostrar snackbar/telemetria */ }
+        onRetry = {
+            navController.navigate("home")
+        }
     )
 }
 
@@ -89,11 +92,14 @@ private fun ErrorSection(
     onRetry: () -> Unit
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(Dimens.spacing16)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ColorPrimary),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = message, style = Typography.bodyLarge)
-        Spacer(Modifier.height(Dimens.spacing8))
+        Spacer(Modifier.height(Dimens.spacing16))
         Button(onClick = onRetry) {
             Text("Tentar novamente")
         }
@@ -109,12 +115,19 @@ private fun UsersSection(
         text = title,
         style = Typography.displayLarge,
         modifier = Modifier
-            .padding(Dimens.spacing16)
+            .padding(
+                top = Dimens.spacing32,
+                bottom = Dimens.spacing16,
+                start = Dimens.spacing16,
+                end = Dimens.spacing16
+            )
             .fillMaxWidth()
     )
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(Dimens.spacing2),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ColorBackground)
     ) {
         items(
             items = users,
@@ -132,23 +145,34 @@ private fun UsersSection(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    Theme {
+    PicPayTheme {
         val users = listOf(
             User(
                 img = "https://randomuser.me/api/portraits/men/1.jpg",
-                name = "João Silva",
+                name = "Jaiminho o Carteiro",
                 id = "1",
-                username = "joaosilva"
+                username = "Evitar a Fadiga"
             ),
             User(
                 img = "https://randomuser.me/api/portraits/women/2.jpg",
-                name = "Maria Souza",
+                name = "Chiquinha",
                 id = "2",
-                username = "mariasouza"
+                username = "Pois é, pois é, pois é"
             )
         ).map { it.toUi() }
         HomeScreenContent(
             uiState = HomeUiState.Success(users),
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenErrorPreview() {
+    PicPayTheme {
+        HomeScreenContent(
+            uiState = HomeUiState.Error("Erro de rede. Tente novamente."),
             onRetry = {}
         )
     }
