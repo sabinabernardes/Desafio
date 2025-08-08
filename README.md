@@ -121,7 +121,8 @@ sealed class HomeUiState {
 3. Offline? Mostra o que tem no DB e sinaliza modo offline.
 
 ---
-## Glossário de Branches
+<details>
+<summary>📚 Glossário de Branches</summary>
 
 > **Por quê?**  
 > Este glossário serve como _guarda-chuva_ de tarefas: cada branch tem nome padronizado (`<área>/<nº>-<slug-descritivo>`), facilitando a discussão nos PRs, a ordem de merge e a leitura do meu raciocínio de construção.
@@ -154,6 +155,8 @@ sealed class HomeUiState {
 | 001 | `feature/001-model-dto-mapper` | Criação dos modelos de domínio, DTOs da API e mapeadores entre eles. |
 | 004 | `feature/004-usecase` | Camada opcional de UseCase isolando regras de negócio da UI. |
 | 005 | `feature/005-home-viewmodel` | ViewModel e contratos de UI (State + Event), gerenciamento com StateFlow. |
+| 006 | `feature/006-adjusting-internal` | Ajusta as classes internal do modulo home pra nao dar acesso a outros modulos . |
+
 
 ---
 
@@ -166,7 +169,7 @@ sealed class HomeUiState {
 
 Esse esquema garante histórico linear, PRs focados e fácil rastreabilidade de discussões.
 
----
+</details>
 
 ## Testes
 
