@@ -1,9 +1,9 @@
-
 package com.bina.home.integration
 
 import com.bina.home.domain.model.User
 import com.bina.home.domain.repository.UsersRepository
 import com.bina.home.domain.usecase.GetUsersUseCase
+import com.bina.home.presentation.screen.UserUi
 import com.bina.home.presentation.viewmodel.HomeUiState
 import com.bina.home.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,8 +19,13 @@ import org.junit.Before
 import org.junit.Test
 import kotlinx.coroutines.Dispatchers
 
-internal class FakeUsersRepository(private val users: List<User>) : UsersRepository {
-    override suspend fun getUsers(): Flow<List<User>> = flowOf(users)
+internal class FakeUsersRepository(private val users: List<UserUi>) : UsersRepository {
+    override suspend fun getUsers(): Flow<List<User>> = flowOf(users.map { User(
+        img = it.imageUrl,
+        name = it.name,
+        id = it.id,
+        username = it.username
+    ) })
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,7 +45,7 @@ class HomeViewModelIntegrationTest {
     @Test
     fun `integration - fetchUsers updates uiState to Success`() = runTest {
         // given
-        val expectedUsers = listOf(User("img", "name", "id", "username"))
+        val expectedUsers = listOf(UserUi("name", "username", "img", "id"))
         val repository = FakeUsersRepository(expectedUsers)
         val useCase = GetUsersUseCase(repository)
         val viewModel = HomeViewModel(useCase)
