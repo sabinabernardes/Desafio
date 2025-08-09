@@ -16,13 +16,14 @@ class HomeScreenUiTest {
     @Test
     fun homeScreen_showsUserList_whenSuccess() {
         // given
-        val users = listOf(User("img", "Nome do Usuário", "1", "username"))
+        val users = listOf(User("img", "Nome do Usuário", "1", "username")).map { it.toUi() }
         // when
         composeTestRule.setContent {
-            HomeScreenContent(HomeUiState.Success(users))
+            HomeScreenContent(HomeUiState.Success(users),{})
         }
         // then
         composeTestRule.onNodeWithText("Nome do Usuário").assertIsDisplayed()
+        composeTestRule.onNodeWithText("username").assertIsDisplayed()
     }
 
     @Test
@@ -31,7 +32,7 @@ class HomeScreenUiTest {
         val errorMessage = "Erro de rede"
         // when
         composeTestRule.setContent {
-            HomeScreenContent(HomeUiState.Error(errorMessage))
+            HomeScreenContent(HomeUiState.Error(errorMessage),{})
         }
 
         // then

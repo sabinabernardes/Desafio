@@ -2,10 +2,12 @@ package com.bina.home.presentation.viewmodel
 
 import com.bina.home.domain.usecase.GetUsersUseCase
 import com.bina.home.domain.model.User
+import com.bina.home.presentation.screen.toUi
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -26,7 +28,6 @@ class HomeViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         getUsersUseCase = mockk()
-        viewModel = HomeViewModel(getUsersUseCase)
     }
 
     @After
@@ -39,19 +40,22 @@ class HomeViewModelTest {
         // given
         val expectedUsers = listOf(User("img", "name", "id", "username"))
         coEvery { getUsersUseCase() } returns flowOf(expectedUsers)
+        viewModel = HomeViewModel(getUsersUseCase)
         // when
         viewModel.fetchUsers()
         testDispatcher.scheduler.advanceUntilIdle()
         // then
         val state = viewModel.uiState.value
         assertEquals(true, state is HomeUiState.Success)
-        assertEquals(expectedUsers, (state as HomeUiState.Success).users)
+        val expectedUiUsers = expectedUsers.map { it.toUi() }
+        assertEquals(expectedUiUsers, (state as HomeUiState.Success).users)
     }
 
     @Test
     fun `given use case throws when fetchUsers called then uiState is Error`() = runTest {
         // given
-        coEvery { getUsersUseCase() } throws Exception("Network error")
+        coEvery { getUsersUseCase() } returns flow { throw Exception("Network error") }
+        viewModel = HomeViewModel(getUsersUseCase)
         // when
         viewModel.fetchUsers()
         testDispatcher.scheduler.advanceUntilIdle()

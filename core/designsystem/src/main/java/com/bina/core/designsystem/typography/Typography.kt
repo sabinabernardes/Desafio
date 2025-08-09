@@ -1,4 +1,4 @@
-package com.bina.core.designsystem.Typography
+package com.bina.core.designsystem.typography
 
 
 import androidx.compose.material3.Typography
