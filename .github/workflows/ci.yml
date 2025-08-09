@@ -45,11 +45,12 @@ jobs:
             **/build/reports/ktlint/**/*
             app/build/reports/jacoco/jacocoTestReport/**/*
 
-      - name: Generate coverage badge (Jacoco)
-        uses: cicirello/jacoco-badge-generator@v3
+      - name: Generate coverage badge (JaCoCo)
+        uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-xml-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+          jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
           coverage-badge-filename: coverage.svg
+          badges-directory: badges
           generate-branches-badge: false
           fail-if-coverage-less-than: 0
 
