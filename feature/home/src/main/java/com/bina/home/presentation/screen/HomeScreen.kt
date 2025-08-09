@@ -22,7 +22,7 @@ import com.bina.core.designsystem.colors.ColorPrimary
 import com.bina.core.designsystem.colors.Theme
 import com.bina.core.designsystem.components.UserCard
 import com.bina.core.designsystem.dimens.Dimens
-import com.bina.home.domain.model.UserDomain
+import com.bina.home.domain.model.User
 import com.bina.home.presentation.viewmodel.HomeUiState
 import com.bina.home.presentation.viewmodel.HomeViewModel
 import androidx.navigation.NavHostController
@@ -82,13 +82,13 @@ private fun HomeScreenContent(uiState: HomeUiState) {
 fun HomeScreenPreview() {
     Theme {
         val users = listOf(
-            UserDomain(
+            User(
                 img = "https://randomuser.me/api/portraits/men/1.jpg",
                 name = "João Silva",
                 id = "1",
                 username = "joaosilva"
             ),
-            UserDomain(
+            User(
                 img = "https://randomuser.me/api/portraits/women/2.jpg",
                 name = "Maria Souza",
                 id = "2",
