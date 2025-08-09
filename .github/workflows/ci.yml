@@ -48,9 +48,9 @@ jobs:
       - name: Generate coverage badge (JaCoCo)
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
-          coverage-badge-filename: coverage.svg
+          jacoco-csv-file: '**/reports/jacoco/jacocoTestReport/jacocoTestReport.csv'
           badges-directory: badges
+          coverage-badge-filename: coverage.svg
           generate-branches-badge: false
           fail-if-coverage-less-than: 0
 

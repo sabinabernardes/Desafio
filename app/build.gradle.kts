@@ -73,52 +73,28 @@ detekt {
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest")
-
     reports {
         xml.required.set(true)
         html.required.set(true)
         csv.required.set(true)
-        csv.outputLocation.set(layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv"))
+        csv.outputLocation.set(
+            layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv")
+        )
     }
 
-    val fileFilter =
-        listOf(
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
+    val fileFilter = listOf(
+        "**/R.class","**/R$*.class","**/BuildConfig.*","**/Manifest*.*","**/*Test*.*","android/**/*.*"
+    )
+    val javaDebug = fileTree("$buildDir/intermediates/javac/debug/classes") { exclude(fileFilter) }
+    val kotlinDebug = fileTree("$buildDir/tmp/kotlin-classes/debug") { exclude(fileFilter) }
+
+    classDirectories.setFrom(files(javaDebug, kotlinDebug))
+    sourceDirectories.setFrom(files("src/main/java","src/main/kotlin"))
+
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
         )
-
-    val javaDebugTree =
-        fileTree("${project.buildDir}/intermediates/javac/debug/classes") {
-            exclude(fileFilter)
-        }
-
-    val kotlinDebugTree =
-        fileTree("${project.buildDir}/tmp/kotlin-classes/debug") {
-            exclude(fileFilter)
-        }
-
-    classDirectories.setFrom(
-        files(
-            javaDebugTree,
-            kotlinDebugTree,
-        ),
-    )
-    sourceDirectories.setFrom(
-        files(
-            "src/main/java",
-            "src/main/kotlin",
-        ),
-    )
-    executionData.setFrom(
-        fileTree(project.buildDir) {
-            include(
-                "jacoco/testDebugUnitTest.exec",
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-            )
-        },
-    )
+    })
 }
