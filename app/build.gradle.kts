@@ -78,23 +78,31 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         html.required.set(true)
         csv.required.set(true)
         csv.outputLocation.set(
-            layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv")
+            layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv"),
         )
     }
 
-    val fileFilter = listOf(
-        "**/R.class","**/R$*.class","**/BuildConfig.*","**/Manifest*.*","**/*Test*.*","android/**/*.*"
-    )
+    val fileFilter =
+        listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*",
+        )
     val javaDebug = fileTree("$buildDir/intermediates/javac/debug/classes") { exclude(fileFilter) }
     val kotlinDebug = fileTree("$buildDir/tmp/kotlin-classes/debug") { exclude(fileFilter) }
 
     classDirectories.setFrom(files(javaDebug, kotlinDebug))
-    sourceDirectories.setFrom(files("src/main/java","src/main/kotlin"))
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
 
-    executionData.setFrom(fileTree(buildDir) {
-        include(
-            "jacoco/testDebugUnitTest.exec",
-            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-        )
-    })
+    executionData.setFrom(
+        fileTree(buildDir) {
+            include(
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            )
+        },
+    )
 }
