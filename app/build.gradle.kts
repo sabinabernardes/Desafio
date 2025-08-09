@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.js.backend.ast.JsEmpty.setSource
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -16,7 +18,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -67,40 +68,41 @@ dependencies {
 detekt {
     buildUponDefaultConfig = true
     config.setFrom("${rootProject.projectDir}/detekt.yml")
-    source = files("src/main/java", "src/test/java")
+    setSource(files("src/main/java", "src/test/java"))
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
     reports {
         xml.required.set(true)
         html.required.set(true)
-        txt.required.set(false)
-        sarif.required.set(false)
+        csv.required.set(true)
+        csv.outputLocation.set(
+            layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv"),
+        )
     }
-}
 
-    tasks.register<JacocoReport>("jacocoTestReport") {
-        dependsOn("testDebugUnitTest")
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-        }
-        val fileFilter = listOf(
-            // Exclui arquivos gerados e de teste
+    val fileFilter =
+        listOf(
             "**/R.class",
             "**/R$*.class",
             "**/BuildConfig.*",
             "**/Manifest*.*",
             "**/*Test*.*",
-            "android/**/*.*"
+            "android/**/*.*",
         )
-        val debugTree = fileTree(
-            "${buildDir}/intermediates/javac/debug/classes"
-        ) { exclude(fileFilter) }
-        val mainSrc = "src/main/java"
-        classDirectories.setFrom(debugTree)
-        sourceDirectories.setFrom(files(mainSrc))
-        executionData.setFrom(fileTree(buildDir) {
+    val javaDebug = fileTree("$buildDir/intermediates/javac/debug/classes") { exclude(fileFilter) }
+    val kotlinDebug = fileTree("$buildDir/tmp/kotlin-classes/debug") { exclude(fileFilter) }
+
+    classDirectories.setFrom(files(javaDebug, kotlinDebug))
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+
+    executionData.setFrom(
+        fileTree(buildDir) {
             include(
                 "jacoco/testDebugUnitTest.exec",
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
             )
-        })
-    }
+        },
+    )
+}
