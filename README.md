@@ -171,13 +171,64 @@ Esse esquema garante histórico linear, PRs focados e fácil rastreabilidade de 
 
 | Tipo | Ferramentas | Cobertura |
 | ---- | ----------- | --------- |
-| Unit | JUnit, MockK, Turbine | ViewModel, Repo, UseCase |
+| Unit | JUnit, MockK | ViewModel, Repo, UseCase |
 | Instrumentado | Room (in-memory), MockWebServer | DAO, rede 200/304/404/500 |
 | UI Compose | Compose Test | loading/empty/error/success + ações |
 
 
 ---
+## 🧠 Trade-offs e Decisões Técnicas
 
+Aqui estão as principais escolhas de arquitetura e por que elas foram feitas neste projeto.  
+A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás delas.
+
+### **UI e Arquitetura**
+- **Jetpack Compose** → Mais rápido pra iterar e testar.  
+  _Trade-off_: curva de aprendizado e atenção à recomposição; resolvido com UDF + estados imutáveis.
+- **Unidirectional Data Flow (UDF)** com `StateFlow` → Estado único, previsível e fácil de testar.
+- **Kotlin Flow** no domínio/repos** → Fluxos reativos pra dados contínuos (ex.: Room emite mudanças automaticamente).  
+  _Benefício_: evita callbacks e facilita composição de operações assíncronas.  
+  _Trade-off_: exige atenção a escopo/cancelamento; mitigado com `viewModelScope` e operadores como `onStart`/`catch`.
+- **ViewModel + UseCases** → Isolamento de regras de negócio da UI.  
+  _Custo_: mais arquivos, ganho em clareza e escalabilidade.
+
+### **Injeção de Dependências**
+- **Koin** → Setup rápido e simples.  
+
+### **Estratégia de Dados**
+- **Offline-first com Room** → Resposta instantânea do cache local, seguido de atualização em segundo plano (*stale-while-revalidate*).
+- **Retrofit + OkHttp** → Cliente HTTP com interceptors para logging, headers e tratamento centralizado de erros.
+- **Por que não só cache HTTP?** → HTTP cache é bom, mas não cobre UX offline nem garante consistência. Room dá controle fino e histórico.
+
+### **Tratamento de Erros**
+- Mapeamento claro:
+  - **4xx** → Erro de entrada, tratado e exibido para o usuário.
+  - **5xx** → Retry com backoff exponencial.
+  - **Sem rede** → Modo offline, UI consistente e feedback visual.
+
+### **Performance e UX**
+- Evito recomposições desnecessárias com `remember`, `derivedStateOf` e parâmetros estáveis.
+- Imagens com placeholder e tamanho fixo para evitar flicker.
+- Acessibilidade com `contentDescription` e feedback em estados de loading/erro.
+
+### **Testes e Qualidade**
+- **Testes de ViewModel** com Turbine (validação de fluxo de estados).
+- **Testes de Repositório** com MockWebServer (200/404/500 e cenários de cache).
+- **CI** com build, lint, testes e badge de cobertura.
+- **ktlintCheck** e **Detekt** para manter o padrão de código.
+
+---
+
+## 📌 Coisas legais pra ver aqui
+
+- **[HomeViewModel](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estados imutáveis.
+- **[UserRepositoryImpl](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → Estratégia offline-first com Room + Retrofit.
+- **[HomeScreen](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Tela Compose com estados Loading, Success, Error.
+- **[Política de Cache](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/core/network/cache/CachePolicy.kt)** → TTL + stale-while-revalidate.
+- **[Testes de VM](https://github.com/sabinabernardes/Desafio/blob/main/app/src/test/java/com/bina/home/presentation/viewmodel/HomeViewModelTest.kt)** → Testes de fluxo com Turbine.
+- **[Testes de Repo](https://github.com/sabinabernardes/Desafio/blob/main/app/src/test/java/com/bina/home/data/repository/UserRepositoryImplTest.kt)** → MockWebServer cobrindo 200/404/500 e cenários offline.
+
+---
 ## Próximos Passos
 
 - Snapshot tests (Papparazzi)   
