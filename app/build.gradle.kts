@@ -76,31 +76,39 @@ detekt {
     }
 }
 
-    tasks.register<JacocoReport>("jacocoTestReport") {
-        dependsOn("testDebugUnitTest")
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-        }
-        val fileFilter = listOf(
-            // Exclui arquivos gerados e de teste
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*"
-        )
-        val debugTree = fileTree(
-            "${buildDir}/intermediates/javac/debug/classes"
-        ) { exclude(fileFilter) }
-        val mainSrc = "src/main/java"
-        classDirectories.setFrom(debugTree)
-        sourceDirectories.setFrom(files(mainSrc))
-        executionData.setFrom(fileTree(buildDir) {
-            include(
-                "jacoco/testDebugUnitTest.exec",
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-            )
-        })
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(true)
+        csv.outputLocation.set(layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.csv"))
     }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*"
+    )
+
+    val javaDebugTree = fileTree("$buildDir/intermediates/javac/debug/classes") {
+        exclude(fileFilter)
+    }
+    val kotlinDebugTree = fileTree("$buildDir/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(javaDebugTree, kotlinDebugTree))
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
+    })
+}
