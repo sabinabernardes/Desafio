@@ -51,24 +51,70 @@ jobs:
             **/build/reports/lint-results*.html
             **/build/reports/lint-results*.xml
             **/build/reports/kover/**/*
+            
+            # --- Badge de cobertura (lendo Kover XML, sem action externo) ---
+            - name: Generate coverage badge (from Kover XML)
+              run: |
+                set -e
 
-      - name: Generate coverage badge (Kover XML)
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          jacoco-xml-file: '**/build/reports/kover/xml/report.xml'
-          badges-directory: badges
-          coverage-badge-filename: coverage.svg
-          generate-branches-badge: false
-          fail-if-coverage-less-than: 0
+                FILE=$(find . -path "*/build/reports/kover/xml/report.xml" | head -n1)
+                if [ -z "$FILE" ]; then
+                  echo "Kover XML não encontrado."
+                  exit 1
+                fi
+                echo "Usando relatório: $FILE"
 
-      - name: Commit badge
-        if: github.event_name == 'push'
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add badges/coverage.svg
-          git commit -m "chore(ci): update coverage badge [skip ci]" || echo "No changes"
-          git push
+                # Extrai linhas cobertas/missings do XML do Kover (formato JaCoCo)
+                COVERED=$(xmllint --xpath 'string(//counter[@type="LINE"]/@covered)' "$FILE")
+                MISSED=$(xmllint --xpath 'string(//counter[@type="LINE"]/@missed)' "$FILE")
+                TOTAL=$(( ${COVERED:-0} + ${MISSED:-0} ))
+                if [ "$TOTAL" -eq 0 ]; then PCT=0; else PCT=$(awk -v c="$COVERED" -v m="$MISSED" 'BEGIN{ printf("%.0f",(c/(c+m))*100) }'); fi
+                echo "Cobertura: ${PCT}% (covered=$COVERED missed=$MISSED)"
+
+                # Escolhe cor por faixa
+                if   [ "$PCT" -ge 90 ]; then COLOR="#4c1";
+                elif [ "$PCT" -ge 80 ]; then COLOR="#97ca00";
+                elif [ "$PCT" -ge 70 ]; then COLOR="#a4a61d";
+                elif [ "$PCT" -ge 60 ]; then COLOR="#dfb317";
+                elif [ "$PCT" -ge 50 ]; then COLOR="#fe7d37";
+                else                         COLOR="#e05d44"; fi
+
+                # Gera SVG simples (estilo shields)
+                WIDTH_LEFT=62
+                WIDTH_RIGHT=58
+                WIDTH_TOTAL=$((WIDTH_LEFT+WIDTH_RIGHT))
+                cat > coverage.svg <<EOF
+                <svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH_TOTAL}" height="20" role="img" aria-label="coverage: ${PCT}%">
+                  <linearGradient id="b" x2="0" y2="100%">
+                    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+                    <stop offset="1" stop-opacity=".1"/>
+                  </linearGradient>
+                  <mask id="a">
+                    <rect width="${WIDTH_TOTAL}" height="20" rx="3" fill="#fff"/>
+                  </mask>
+                  <g mask="url(#a)">
+                    <rect width="${WIDTH_LEFT}" height="20" fill="#555"/>
+                    <rect x="${WIDTH_LEFT}" width="${WIDTH_RIGHT}" height="20" fill="${COLOR}"/>
+                    <rect width="${WIDTH_TOTAL}" height="20" fill="url(#b)"/>
+                  </g>
+                  <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+                    <text x="$((WIDTH_LEFT/2))" y="14">coverage</text>
+                    <text x="$((WIDTH_LEFT + WIDTH_RIGHT/2))" y="14">${PCT}%</text>
+                  </g>
+                </svg>
+                EOF
+
+                mkdir -p badges
+                mv coverage.svg badges/coverage.svg
+
+            - name: Commit badge
+              if: github.event_name == 'push'
+              run: |
+                git config user.name "github-actions"
+                git config user.email "github-actions@github.com"
+                git add badges/coverage.svg
+                git commit -m "chore(ci): update coverage badge [skip ci]" || echo "No changes"
+                git push
 
       - name: Job Summary
         if: always()
