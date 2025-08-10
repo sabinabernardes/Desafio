@@ -31,9 +31,9 @@ jobs:
             lint
 
       # --- Testes + cobertura (Kover) ---
-      - name: Unit tests + Kover
+      - name: Unit tests + Kover (Home)
         run: |
-          ./gradlew :app:test :app:koverXmlReport :app:koverHtmlReport
+          ./gradlew :feature:home:test :feature:home:koverXmlReport :feature:home:koverHtmlReport
 
       - name: Debug Kover outputs
         run: |
