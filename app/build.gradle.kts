@@ -71,5 +71,3 @@ detekt {
     config.setFrom("${rootProject.projectDir}/detekt.yml")
     setSource(files("src/main/java", "src/test/java"))
 }
-
-
