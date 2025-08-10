@@ -1,9 +1,12 @@
+import org.jetbrains.kotlin.js.backend.ast.JsEmpty.setSource
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -16,7 +19,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -67,40 +69,5 @@ dependencies {
 detekt {
     buildUponDefaultConfig = true
     config.setFrom("${rootProject.projectDir}/detekt.yml")
-    source = files("src/main/java", "src/test/java")
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        txt.required.set(false)
-        sarif.required.set(false)
-    }
+    setSource(files("src/main/java", "src/test/java"))
 }
-
-    tasks.register<JacocoReport>("jacocoTestReport") {
-        dependsOn("testDebugUnitTest")
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-        }
-        val fileFilter = listOf(
-            // Exclui arquivos gerados e de teste
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*"
-        )
-        val debugTree = fileTree(
-            "${buildDir}/intermediates/javac/debug/classes"
-        ) { exclude(fileFilter) }
-        val mainSrc = "src/main/java"
-        classDirectories.setFrom(debugTree)
-        sourceDirectories.setFrom(files(mainSrc))
-        executionData.setFrom(fileTree(buildDir) {
-            include(
-                "jacoco/testDebugUnitTest.exec",
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-            )
-        })
-    }
