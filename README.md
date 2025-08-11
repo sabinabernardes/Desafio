@@ -126,13 +126,12 @@ sealed class HomeUiState {
 
 1. Room primeiro (`loadFromDb()`)  
 2. Se dados velhos, refresh em paralelo (API → Room → UI)  
-3. Sem rede → mostra cache e sinaliza modo offline  
 
 ---
 ### Como testar
 1. Rodar o app e ver a lista (estado Loading → Success).  
 2. Ativar **modo avião** e reabrir o app: lista continua disponível (cache local).  
-3. Desativar modo avião: dados são atualizados quando a rede volta (refresh).
+3. Desativar modo avião: dados são atualizados quando a rede volta.
 
 ## Glosário de Branches
 
@@ -219,17 +218,10 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 
 ### **Estratégia de Dados**
 - **Offline-first com Room** → Resposta instantânea do cache local, seguido de atualização em segundo plano (*stale-while-revalidate*).
-- **Retrofit + OkHttp** → Cliente HTTP com interceptors para logging, headers e tratamento centralizado de erros.
-
-
-### **Performance e UX**
-- Evito recomposições desnecessárias com `remember`, `derivedStateOf` e parâmetros estáveis.
-- Imagens com placeholder e tamanho fixo para evitar flicker.
-- Acessibilidade com `contentDescription` e feedback em estados de loading/erro.
 
 ### **Testes e Qualidade**
 - **Testes de ViewModel**  (validação de fluxo de estados).
-- **CI** com build, lint, testes e badge de cobertura.
+- **CI** com build, lint, testes.
 - **ktlintCheck** e **Detekt** para manter o padrão de código.
 
 ---
