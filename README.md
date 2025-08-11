@@ -236,8 +236,8 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 
 ## 📌 Coisas legais pra ver aqui
 
-Se você quer ir direto ao que mostra **arquitetura sólida, Compose bem aplicado e atenção a detalhe**, aqui estão os pontos mais legais desse repositório.  
-Cada link leva pra uma parte que vale clicar e inspecionar — e todas elas estão organizadas de forma modular pra ser fácil de entender e testar.
+Quer ver de perto arquitetura bem estruturada, Compose aplicado com boas práticas e atenção aos detalhes?
+Aqui estão os destaques do repositório, com links diretos para as partes mais interessantes — tudo organizado de forma modular para facilitar leitura e testes.
 
 ### 💻 UI & Compose (módulo Home)
 - **[HomeScreen](feature/home/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Compose com estados claros (Loading/Success/Error) e UI desacoplada da VM.  
@@ -245,13 +245,17 @@ Cada link leva pra uma parte que vale clicar e inspecionar — e todas elas est�
 
 ### 🏗 Arquitetura & Dados (módulo Home)
 - **[HomeViewModel](feature/home/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estado imutável, resiliente a rotação/process-death.  
-- **[UserRepositoryImpl](feature/home/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → Estratégia **offline-first**: lê do Room primeiro e atualiza em segundo plano via API.  
-- **[Local Data Source](feature/home/src/main/java/com/bina/home/data/local/UsersLocalDataSourceImpl.kt)** → Implementação que lê/escreve no Room.  
-- **[Remote Data Source](feature/home/src/main/java/com/bina/home/data/remote/UsersRemoteDataSourceImpl.kt)** → Implementação que consulta a API via Retrofit.
+- **[UserRepositoryImpl](feature/home/src/main/java/com/bina/home/data/repository/UsersRepositoryImpl.kt)** → Estratégia **offline-first**: lê do Room primeiro e atualiza em segundo plano via API.  
+- **[Local Data Source](feature/home/src/main/java/com/bina/home/data/localdatasource/UsersLocalDataSourceImpl.kt)** → Implementação que lê/escreve no Room.  
+- **[Remote Data Source](feature/home/src/main/java/com/bina/home/data/remotedatasource/UsersRemoteDataSourceImpl.kt)** → Implementação que consulta a API via Retrofit.
+
+  ### 🧪 Testes
+- **[VM Tests](feature/home/src/test/java/com/bina/home/presentation/viewmodel/HomeViewModelTest.kt)** → fluxo de uiState.  
+- **[HomeScreenUiTest](feature/home/src/androidTest/java/com/bina/home/presentation/screen/HomeScreenUiTest.kt)** → teste de Ui com compose 
 
 ### ⚙️ CI/CD & Qualidade (root do repo)
-- **[CI Workflow](.github/workflows/ci.yml)** → Build + lint + testes + **relatório de cobertura Kover como artefato**.  
-- **[Template de Pull Request](.github/pull_request_template.md)** → Checklist de revisão (build, testes, screenshots, trade-offs).  
+- **[CI Workflow](.github/workflows/ci.yml)** → Build + lint + testes + **relatório de cobertura Kover **.  
+- **[Template de Pull Request](.github/PULL_REQUEST_TEMPLATE.md)** → Checklist de revisão (build, testes, screenshots, trade-offs).  
 - **Ktlint & Detekt** → Estilo consistente e regras estáticas.
 
 ---
