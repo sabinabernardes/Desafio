@@ -234,10 +234,23 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 
 ## 📌 Coisas legais pra ver aqui
 
-- [HomeViewModel](app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)  
-- [UserRepositoryImpl](app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)  
-- [HomeScreen](app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)  
-- [Testes de VM](app/src/test/java/com/bina/home/presentation/viewmodel/HomeViewModelTest.kt)  
+Este repositório não é só uma tela de lista — ele demonstra boas práticas de **arquitetura**, **UI moderna** e **automação**.  
+Se quiser ir direto ao que mais chama atenção, comece por aqui:
+
+### 💻 UI & Compose
+- **[HomeScreen](app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Compose com estados claros (Loading/Success/Error) e UI desacoplada da VM.  
+- **[Design System](core/designsystem)** → tokens de cor/tipografia/spacing e componentes reusáveis com previews.
+
+### 🏗 Arquitetura & Dados
+- **[HomeViewModel](app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estado imutável, resiliente a rotação/process-death.  
+- **[UserRepositoryImpl](app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → **offline-first**: Room primeiro, refresh em segundo plano.  
+- **[Política de Cache](app/src/main/java/com/bina/core/network/cache/CachePolicy.kt)** → TTL + *stale-while-revalidate* na prática.
+
+
+### ⚙️ CI/CD & Qualidade
+- **[CI Workflow](.github/workflows/ci.yml)** → build + lint + testes + **relatório de cobertura Kover como artefato**.  
+- **[Template de Pull Request](.github/pull_request_template.md)** → checklist de revisão (build, testes, screenshots, trade-offs).  
+- **Ktlint & Detekt** → estilo consistente e regras estáticas.
 
 ---
 
