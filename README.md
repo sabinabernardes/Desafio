@@ -34,11 +34,12 @@ cd Desafio
 4. [Módulos](#módulos)
 5. [Fluxo de Dados](#fluxo-de-dados)
 6. [Política de Cache](#política-de-cache)
-7. [Glosário de Branches](#glossário-de-branches)
-8. [Testes](#testes)
-9. [Trade-offs e Decisões Técnicas](#trade-offs-e-decisões-técnicas)
-10. [Coisas legais pra ver aqui](#coisas-legais-pra-ver-aqui)
-11. [Próximos Passos](#próximos-passos)
+7. [Como Testar](#como-testar)
+8. [Glosário de Branches](#glossário-de-branches)
+9. [Testes](#testes)
+10. [Trade-offs e Decisões Técnicas](#trade-offs-e-decisões-técnicas)
+11. [Coisas legais pra ver aqui](#coisas-legais-pra-ver-aqui)
+12. [Próximos Passos](#próximos-passos)
 
 ---
 
@@ -96,8 +97,7 @@ flowchart TD
   RepoImpl -.->|implements| IRepo
 ```
 
-> **Por que assim?**  
-> - Resiliência a rotação/process-death com `SavedStateHandle`.  
+> **Por que assim?**   
 > - Evolução sem quebra: UI, Domain e Data desacoplados.  
 > - Offline-first: Repository decide entre Room e API.
 
@@ -131,6 +131,10 @@ sealed class HomeUiState {
 3. Sem rede → mostra cache e sinaliza modo offline  
 
 ---
+### Como testar
+1. Rodar o app e ver a lista (estado Loading → Success).  
+2. Ativar **modo avião** e reabrir o app: lista continua disponível (cache local).  
+3. Desativar modo avião: dados são atualizados quando a rede volta (refresh).
 
 ## Glosário de Branches
 
@@ -192,7 +196,7 @@ Esse esquema garante histórico linear, PRs focados e fácil rastreabilidade de 
 | Tipo | Ferramentas | Casos principais |
 | ---- | ----------- | ---------------- |
 | Unit | JUnit, MockK, Turbine | VM emite Loading→Success; Repo acessa cache e API |
-| Instrumentado | Room in-memory, MockWebServer | DAO; respostas 200/404/500 |
+| Instrumentado | Room in-memory |
 | UI Compose | Compose Test | Estados loading/error/success e ações |
 
 ---
@@ -234,23 +238,23 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 
 ## 📌 Coisas legais pra ver aqui
 
-Este repositório não é só uma tela de lista — ele demonstra boas práticas de **arquitetura**, **UI moderna** e **automação**.  
-Se quiser ir direto ao que mais chama atenção, comece por aqui:
+Se você quer ir direto ao que mostra **arquitetura sólida, Compose bem aplicado e atenção a detalhe**, aqui estão os pontos mais legais desse repositório.  
+Cada link leva pra uma parte que vale clicar e inspecionar — e todas elas estão organizadas de forma modular pra ser fácil de entender e testar.
 
-### 💻 UI & Compose
-- **[HomeScreen](app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Compose com estados claros (Loading/Success/Error) e UI desacoplada da VM.  
-- **[Design System](core/designsystem)** → tokens de cor/tipografia/spacing e componentes reusáveis com previews.
+### 💻 UI & Compose (módulo Home)
+- **[HomeScreen](feature/home/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Compose com estados claros (Loading/Success/Error) e UI desacoplada da VM.  
+- **[Design System](core/designsystem)** *(módulo dedicado)* → Tokens de cor, tipografia, espaçamentos e componentes reutilizáveis com previews.
 
-### 🏗 Arquitetura & Dados
-- **[HomeViewModel](app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estado imutável, resiliente a rotação/process-death.  
-- **[UserRepositoryImpl](app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → **offline-first**: Room primeiro, refresh em segundo plano.  
-- **[Política de Cache](app/src/main/java/com/bina/core/network/cache/CachePolicy.kt)** → TTL + *stale-while-revalidate* na prática.
+### 🏗 Arquitetura & Dados (módulo Home)
+- **[HomeViewModel](feature/home/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estado imutável, resiliente a rotação/process-death.  
+- **[UserRepositoryImpl](feature/home/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → Estratégia **offline-first**: lê do Room primeiro e atualiza em segundo plano via API.  
+- **[Local Data Source](feature/home/src/main/java/com/bina/home/data/local/UsersLocalDataSourceImpl.kt)** → Implementação que lê/escreve no Room.  
+- **[Remote Data Source](feature/home/src/main/java/com/bina/home/data/remote/UsersRemoteDataSourceImpl.kt)** → Implementação que consulta a API via Retrofit.
 
-
-### ⚙️ CI/CD & Qualidade
-- **[CI Workflow](.github/workflows/ci.yml)** → build + lint + testes + **relatório de cobertura Kover como artefato**.  
-- **[Template de Pull Request](.github/pull_request_template.md)** → checklist de revisão (build, testes, screenshots, trade-offs).  
-- **Ktlint & Detekt** → estilo consistente e regras estáticas.
+### ⚙️ CI/CD & Qualidade (root do repo)
+- **[CI Workflow](.github/workflows/ci.yml)** → Build + lint + testes + **relatório de cobertura Kover como artefato**.  
+- **[Template de Pull Request](.github/pull_request_template.md)** → Checklist de revisão (build, testes, screenshots, trade-offs).  
+- **Ktlint & Detekt** → Estilo consistente e regras estáticas.
 
 ---
 
