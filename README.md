@@ -1,10 +1,29 @@
 # Desafio Android — Solução (Jetpack Compose)
 
-> **Resumo :** Arquitetura modular, UDF com ViewModel + StateFlow, offline-first (Room), testes (unit + instrumentado + UI Compose) e resiliência a rotação, process-death e rede ruim.
+> **Resumo:** Arquitetura modular, UDF com ViewModel + StateFlow, offline-first (Room), testes (unit + instrumentado + UI Compose) 
 
 ![badge-android](https://img.shields.io/badge/Android-Compose-3DDC84)
 ![badge-kotlin](https://img.shields.io/badge/Kotlin-2.x-blue)
 ![badge-ci](https://img.shields.io/badge/CI-Gradle%20%2B%20Detekt-lightgrey)
+
+---
+
+## Como rodar 
+
+```bash
+# 1) Clonar
+git clone https://github.com/sabinabernardes/Desafio.git
+cd Desafio
+
+# 2) Build rápido
+./gradlew clean assembleDebug
+
+# 3) Testes unitários
+./gradlew test
+# (opcional) ./gradlew connectedCheck  # se tiver device/emulador
+
+# 4) Abrir no Android Studio e rodar
+```
 
 ---
 
@@ -15,9 +34,11 @@
 4. [Módulos](#módulos)
 5. [Fluxo de Dados](#fluxo-de-dados)
 6. [Política de Cache](#política-de-cache)
-7. [Glosário de Branchs](#glossário-de-branches)
+7. [Glosário de Branches](#glossário-de-branches)
 8. [Testes](#testes)
-9. [Próximos Passos](#próximos-passos)
+9. [Trade-offs e Decisões Técnicas](#trade-offs-e-decisões-técnicas)
+10. [Coisas legais pra ver aqui](#coisas-legais-pra-ver-aqui)
+11. [Próximos Passos](#próximos-passos)
 
 ---
 
@@ -27,20 +48,18 @@
 | UI | **Jetpack Compose**, Navigation Compose, Coil |
 | DI | Koin |
 | Assíncrono | Coroutines + Flow |
-| Network | Retrofit  |
+| Network | Retrofit |
 | Cache | Room |
 | Qualidade | Detekt, Ktlint |
-| Testes | JUnit5, MockK, Turbine, MockWebServer, Compose UI Testing |
+| Testes | JUnit5, MockK, Compose UI Testing |
 
 ---
 
 ## Screenshots / GIFs
-<img width="334" height="734" alt="Captura de Tela 2025-08-08 às 20 27 40" src="https://github.com/user-attachments/assets/ef28131a-6cfb-45c0-9988-5c6a0bbcb5a2" />
-
-<img width="308" height="650" alt="Captura de Tela 2025-08-08 às 20 27 48" src="https://github.com/user-attachments/assets/d80a3253-26b1-4d02-94ce-6cb346023271" />
-
-<img width="310" height="710" alt="Captura de Tela 2025-08-08 às 20 27 57" src="https://github.com/user-attachments/assets/790c3f22-14b0-4e45-8972-157f2cb58c68" />
-
+<!-- Substituir com GIF curtinho se possível -->
+<img width="334" height="734" alt="Screen1" src="https://github.com/user-attachments/assets/ef28131a-6cfb-45c0-9988-5c6a0bbcb5a2" />
+<img width="308" height="650" alt="Screen2" src="https://github.com/user-attachments/assets/d80a3253-26b1-4d02-94ce-6cb346023271" />
+<img width="310" height="710" alt="Screen3" src="https://github.com/user-attachments/assets/790c3f22-14b0-4e45-8972-157f2cb58c68" />
 
 ---
 
@@ -49,55 +68,46 @@
 ```mermaid
 flowchart TD
 
-  %% Apresentação
   subgraph P["Presentation"]
     UI[Compose] -->|Intents| VM[ViewModel]
     VM -->|StateFlow<UiState>| UI
   end
 
-  %% Domínio
   subgraph D["Domain"]
     UC[UseCase]
-    IRepo["Repository (interface)<br/><code>interface UserRepository</code>"]
+    IRepo["Repository (interface)<br/><code>UserRepository</code>"]
     UC --> IRepo
   end
 
-  %% Dados 
   subgraph DA["Data"]
-    RepoImpl["RepositoryImpl<br/><code>class UserRepositoryImpl</code>"]
+    RepoImpl["RepositoryImpl<br/><code>UserRepositoryImpl</code>"]
     ROOM[(Room<br/>Local Cache)]
     RETRO[Retrofit/OkHttp<br/>Remote]
     RepoImpl --> ROOM
     RepoImpl --> RETRO
   end
 
-  %% Ligações entre camadas
   VM --> UC
   RepoImpl -.->|implements| IRepo
-
 ```
+
 > **Por que assim?**  
-> 
-> - **Resiliência** → ViewModel + `SavedStateHandle` mantêm o estado mesmo em rotação de tela ou process-death, evitando recarregar tudo e perder progresso do usuário.  
-> - **Evolução** → Separar o Domain garante que mudanças de regra de negócio não quebrem UI ou Data, facilitando testes e refatorações sem efeito dominó.  
-> - **Offline-first** → O Repository decide entre cache local (Room) e remoto (API), mantendo UX consistente e dados disponíveis mesmo sem internet.
+> - Resiliência a rotação/process-death com `SavedStateHandle`.  
+> - Evolução sem quebra: UI, Domain e Data desacoplados.  
+> - Offline-first: Repository decide entre Room e API.
 
 ---
 
 ## Módulos
 
-```
-app/                          # Chamada do di+ navegação
-core/designsystem/            # Tema, cores, componentes, espaçamentos
-core/navigation               # Composition root + navegação
-feature/home/                 # Tela principal (UI + VM + DI)
-```
+- [`app/`](app) — DI + Navegação  
+- [`core/designsystem/`](core/designsystem) — Tema, cores, componentes  
+- [`core/navigation`](core/navigation) — Composition root e navegação  
+- [`feature/home/`](feature/home) — Tela principal (UI + VM + DI)  
 
 ---
 
 ## Fluxo de Dados
-
-Estado imutável (`StateFlow<UiState>`) na ViewModel; eventos one-shot em `SharedFlow`.
 
 ```kotlin
 sealed class HomeUiState {
@@ -111,13 +121,16 @@ sealed class HomeUiState {
 
 ## Política de Cache
 
-1. **Room primeiro** (`loadFromDb()`).
-2. Se dados estão velhos, faz **refresh** em paralelo (Remote → Room → UI).
-3. Offline? Mostra o que tem no DB e sinaliza modo offline.
+1. Room primeiro (`loadFromDb()`)  
+2. Se dados velhos, refresh em paralelo (API → Room → UI)  
+3. Sem rede → mostra cache e sinaliza modo offline  
 
 ---
+
+## Glosário de Branches
+
 <details>
-<summary>📚 Glossário de Branches</summary>
+<summary>Ver branches</summary>
 
 > **Por quê?**  
 > Este glossário serve como _guarda-chuva_ de tarefas: cada branch tem nome padronizado (`<área>/<nº>-<slug-descritivo>`), facilitando a discussão nos PRs, a ordem de merge e a leitura do meu raciocínio de construção.
@@ -167,17 +180,19 @@ Esse esquema garante histórico linear, PRs focados e fácil rastreabilidade de 
 
 </details>
 
+---
+
 ## Testes
 
-| Tipo | Ferramentas | Cobertura |
-| ---- | ----------- | --------- |
-| Unit | JUnit, MockK | ViewModel, Repo, UseCase |
-| Instrumentado | Room (in-memory), MockWebServer | DAO, rede 200/304/404/500 |
-| UI Compose | Compose Test | loading/empty/error/success + ações |
-
+| Tipo | Ferramentas | Casos principais |
+| ---- | ----------- | ---------------- |
+| Unit | JUnit, MockK, Turbine | VM emite Loading→Success; Repo acessa cache e API |
+| Instrumentado | Room in-memory, MockWebServer | DAO; respostas 200/404/500 |
+| UI Compose | Compose Test | Estados loading/error/success e ações |
 
 ---
-## 🧠 Trade-offs e Decisões Técnicas
+
+##  Trade-offs e Decisões Técnicas
 
 Aqui estão as principais escolhas de arquitetura e por que elas foram feitas neste projeto.  
 A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás delas.
@@ -198,13 +213,7 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 ### **Estratégia de Dados**
 - **Offline-first com Room** → Resposta instantânea do cache local, seguido de atualização em segundo plano (*stale-while-revalidate*).
 - **Retrofit + OkHttp** → Cliente HTTP com interceptors para logging, headers e tratamento centralizado de erros.
-- **Por que não só cache HTTP?** → HTTP cache é bom, mas não cobre UX offline nem garante consistência. Room dá controle fino e histórico.
 
-### **Tratamento de Erros**
-- Mapeamento claro:
-  - **4xx** → Erro de entrada, tratado e exibido para o usuário.
-  - **5xx** → Retry com backoff exponencial.
-  - **Sem rede** → Modo offline, UI consistente e feedback visual.
 
 ### **Performance e UX**
 - Evito recomposições desnecessárias com `remember`, `derivedStateOf` e parâmetros estáveis.
@@ -212,8 +221,7 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 - Acessibilidade com `contentDescription` e feedback em estados de loading/erro.
 
 ### **Testes e Qualidade**
-- **Testes de ViewModel** com Turbine (validação de fluxo de estados).
-- **Testes de Repositório** com MockWebServer (200/404/500 e cenários de cache).
+- **Testes de ViewModel**  (validação de fluxo de estados).
 - **CI** com build, lint, testes e badge de cobertura.
 - **ktlintCheck** e **Detekt** para manter o padrão de código.
 
@@ -221,17 +229,15 @@ A ideia não é só listar tecnologias, mas mostrar **o raciocínio** por trás 
 
 ## 📌 Coisas legais pra ver aqui
 
-- **[HomeViewModel](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)** → UDF com `StateFlow` e estados imutáveis.
-- **[UserRepositoryImpl](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)** → Estratégia offline-first com Room + Retrofit.
-- **[HomeScreen](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)** → Tela Compose com estados Loading, Success, Error.
-- **[Política de Cache](https://github.com/sabinabernardes/Desafio/blob/main/app/src/main/java/com/bina/core/network/cache/CachePolicy.kt)** → TTL + stale-while-revalidate.
-- **[Testes de VM](https://github.com/sabinabernardes/Desafio/blob/main/app/src/test/java/com/bina/home/presentation/viewmodel/HomeViewModelTest.kt)** → Testes de fluxo com Turbine.
-- **[Testes de Repo](https://github.com/sabinabernardes/Desafio/blob/main/app/src/test/java/com/bina/home/data/repository/UserRepositoryImplTest.kt)** → MockWebServer cobrindo 200/404/500 e cenários offline.
+- [HomeViewModel](app/src/main/java/com/bina/home/presentation/viewmodel/HomeViewModel.kt)  
+- [UserRepositoryImpl](app/src/main/java/com/bina/home/data/repository/UserRepositoryImpl.kt)  
+- [HomeScreen](app/src/main/java/com/bina/home/presentation/screen/HomeScreen.kt)  
+- [Testes de VM](app/src/test/java/com/bina/home/presentation/viewmodel/HomeViewModelTest.kt)  
 
 ---
+
 ## Próximos Passos
-
-- Snapshot tests (Papparazzi)   
-- Feature flags simples  
-- E2E tests
----
+- Mapeamento de erros avançado (4xx/5xx)  
+- Snapshot tests (Paparazzi)  
+- Feature flags  
+- E2E tests  
